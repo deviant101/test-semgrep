@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.env
+
+# Database
+*.db
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Semgrep results (local)
+semgrep-results.json
+semgrep-results.txt
+results.json
+
+# OS
+.DS_Store
+Thumbs.db

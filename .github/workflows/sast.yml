@@ -1,0 +1,54 @@
+name: SAST Security Scan with Semgrep
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  semgrep-sast:
+    name: Semgrep SAST Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Semgrep
+        run: |
+          python -m pip install --upgrade pip
+          pip install semgrep
+
+      - name: Run Semgrep SAST Scan
+        run: |
+          semgrep scan --config auto --config p/security-audit --config p/python --json --output semgrep-results.json . || true
+          semgrep scan --config auto --config p/security-audit --config p/python --output semgrep-results.txt . || true
+
+      - name: Display Semgrep Results
+        run: |
+          echo "========== SEMGREP SAST RESULTS =========="
+          cat semgrep-results.txt || echo "No text results file"
+          echo "==========================================="
+
+      - name: Upload Semgrep Results as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-sast-results
+          path: |
+            semgrep-results.json
+            semgrep-results.txt
+          retention-days: 30
+
+      - name: Upload SARIF to GitHub Security Tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: semgrep-results.json
+        continue-on-error: true

@@ -36,6 +36,8 @@ jobs:
           semgrep scan --config auto --config p/security-audit --config p/python --sarif --output semgrep-results.sarif . || true
           semgrep scan --config auto --config p/security-audit --config p/python --json --output semgrep-results.json . || true
           semgrep scan --config auto --config p/security-audit --config p/python --output semgrep-results.txt . || true
+          # Generate a lightweight HTML report from the JSON output for artifact upload
+          python3 generate_semgrep_html.py || true
 
       - name: Display Semgrep Results
         run: |
@@ -48,9 +50,9 @@ jobs:
         with:
           name: semgrep-sast-results
           path: |
-            semgrep-results.sarif
             semgrep-results.json
             semgrep-results.txt
+            semgrep-results.html
           retention-days: 30
 
       - name: Upload SARIF to GitHub Security Tab

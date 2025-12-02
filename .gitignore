@@ -23,6 +23,10 @@ semgrep-results.json
 semgrep-results.txt
 results.json
 
+# Node
+node_modules/
+package-lock.json
+
 # OS
 .DS_Store
 Thumbs.db

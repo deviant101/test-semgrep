@@ -1,6 +1,6 @@
 # SAST Demo App with Semgrep
 
-This is a simple Python Flask application with **intentional security vulnerabilities** for testing Static Application Security Testing (SAST) using Semgrep in a GitHub Actions pipeline.
+This is a simple Node.js Express application with **intentional security vulnerabilities** for testing Static Application Security Testing (SAST) using Semgrep in a GitHub Actions pipeline.
 
 ## ⚠️ Warning
 
@@ -15,7 +15,7 @@ The app includes the following vulnerabilities that Semgrep should detect:
 3. **Cross-Site Scripting (XSS)** - User input rendered in template without escaping
 4. **Hardcoded Secrets** - API keys and passwords in source code
 5. **Insecure Deserialization** - Using pickle.loads on user input
-6. **Debug Mode in Production** - Flask debug mode enabled
+6. **Insecure Eval / Deserialization** - using `eval` on user input
 
 ## Project Structure
 
@@ -24,8 +24,8 @@ The app includes the following vulnerabilities that Semgrep should detect:
 ├── .github/
 │   └── workflows/
 │       └── sast.yml          # GitHub Actions workflow for Semgrep
-├── app.py                     # Flask application with vulnerabilities
-├── requirements.txt           # Python dependencies
+├── app.js                      # Express application with vulnerabilities
+├── package.json                # Node dependencies
 └── README.md                  # This file
 ```
 

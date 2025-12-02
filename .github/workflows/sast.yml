@@ -21,23 +21,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          python-version: '3.11'
+          node-version: '18'
 
-      - name: Install Semgrep
+      - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install semgrep
+          npm ci --no-audit --no-fund || npm install
 
       - name: Run Semgrep SAST Scan
-        run: |
-          semgrep scan --config auto --config p/security-audit --config p/python --sarif --output semgrep-results.sarif . || true
-          semgrep scan --config auto --config p/security-audit --config p/python --json --output semgrep-results.json . || true
-          semgrep scan --config auto --config p/security-audit --config p/python --output semgrep-results.txt . || true
-          # Generate a lightweight HTML report from the JSON output for artifact upload
-          python3 generate_semgrep_html.py || true
+        uses: returntocorp/semgrep-action@v1
+        with:
+          args: --config p/security-audit --config p/nodejs --config p/owasp-top-ten --config p/javascript --sarif --output semgrep-results.sarif --json --output semgrep-results.json --text --output semgrep-results.txt
 
       - name: Display Semgrep Results
         run: |
@@ -52,7 +48,6 @@ jobs:
           path: |
             semgrep-results.json
             semgrep-results.txt
-            semgrep-results.html
           retention-days: 30
 
       - name: Upload SARIF to GitHub Security Tab

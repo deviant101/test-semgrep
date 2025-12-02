@@ -7,6 +7,11 @@ on:
     branches: [ main, master ]
   workflow_dispatch:  # Allow manual trigger
 
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 jobs:
   semgrep-sast:
     name: Semgrep SAST Analysis

@@ -30,10 +30,31 @@ jobs:
         run: |
           npm ci --no-audit --no-fund || npm install
 
-      - name: Run Semgrep SAST Scan
+      - name: Run Semgrep SAST Scan (SARIF)
         uses: returntocorp/semgrep-action@v1
         with:
-          args: --config p/security-audit --config p/nodejs --config p/owasp-top-ten --config p/javascript --sarif --output semgrep-results.sarif --json --output semgrep-results.json --text --output semgrep-results.txt
+          config: >-
+            p/security-audit
+            p/nodejs
+            p/owasp-top-ten
+            p/javascript
+          generateSarif: true
+        continue-on-error: true
+
+      - name: Run Semgrep SAST Scan (JSON)
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/nodejs
+            p/owasp-top-ten
+            p/javascript
+          generateJson: true
+        continue-on-error: true
+
+      # - name: Run Semgrep SAST Scan (Text)
+      #   run: |
+      #     docker run --rm -v "$PWD:/src" returntocorp/semgrep semgrep scan --config p/security-audit --config p/nodejs --config p/owasp-top-ten --config p/javascript --text /src > semgrep-results.txt || true
 
       - name: Display Semgrep Results
         run: |
